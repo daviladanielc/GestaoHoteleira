@@ -1,75 +1,38 @@
-# React + TypeScript + Vite
+# ERP Hotel — Painel de Governança & Recepção (Front Web)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Aplicação web full-stack desenvolvida para simular os fluxos operacionais essenciais de um sistema de gestão hoteleira (PMS), incluindo mapa interativo de Unidades Habitacionais (UHs), controle de ocupação, cadastros base e check-in com vínculo Mestre-Detalhe de hóspedes.
 
-Currently, two official plugins are available:
+## Funcionalidades
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- **Mapa de UHs em Tempo Real:** Visualização dinâmica das unidades habitacionais por status (`LIVRE`, `OCUPADA`, `MANUTENÇÃO`), indicadores consolidados no cabeçalho e cálculo automático da diária total (tarifa base + adicionais de pensão por hóspede).
+- **Check-in & Vínculo de Hóspedes (Mestre-Detalhe):** Formulário dinâmico para vinculação de titular e acompanhantes respeitando a capacidade máxima da UH, validação de CPF, regime de pensão individual e regra de titular único.
+- **Cadastros Base Relacionais:** Gestão de regimes de pensão, tarifas diárias, categorias de UH e unidades habitacionais com persistência relacional.
+- **API & Persistência Local:** Backend HTTP construído com módulos nativos do Node.js e banco de dados relacional SQLite (`hotel.db`) com chaves estrangeiras e transações atômicas.
 
-## React Compiler
+## Tecnologias Utilizadas
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### Frontend
+- **React 19 + TypeScript + Vite:** Base da aplicação SPA com tipagem estática.
+- **Tailwind CSS + `clsx` + `tailwind-merge`:** Estilização utilitária e composição dinâmica de classes visuais.
+- **React Router (`react-router-dom`):** Roteamento client-side entre Mapa de UHs, Ficha/Check-in e Cadastros.
+- **Zustand:** Gerenciamento de estado global leve para sessão do operador e filtros de interface.
+- **TanStack Query (`@tanstack/react-query`) + Axios:** Comunicação HTTP, cache de consultas e invalidação automática após mutações.
+- **React Hook Form + Zod (`@hookform/resolvers`):** Formulários performáticos (`useFieldArray`) e validação de schemas em tempo de execução.
+- **Sonner:** Notificações flutuantes (*toasts*) para feedback visual das operações.
+- **ESLint + Prettier:** Padronização de código, formatação automática e fiscalização das regras dos Hooks.
 
-## Expanding the ESLint configuration
+### Backend
+- **Node.js (`node:http` & `node:sqlite`):** Servidor REST nativo e banco de dados SQLite embarcado sem dependências externas.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Estrutura do Projeto
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
-
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
-```
+```text
+├── server.mjs               # Servidor REST Node.js e schema/seed do banco SQLite (hotel.db)
+└── src/
+    ├── components/          # Componentes reutilizáveis (Header, CardUH, FormularioVinculoHospedes, Button)
+    ├── hooks/               # Custom Hooks encapsulando Queries e Mutations do TanStack Query
+    ├── lib/                 # Instância do Axios (api.ts) e utilitário de classes CSS (utils.ts)
+    ├── pages/               # Páginas principais da aplicação (MapaUHs, DetalheUH, Cadastros)
+    ├── schemas/             # Schemas de validação e tipos inferidos com Zod
+    ├── store/               # Store global com Zustand e interfaces de domínio
+    └── App.tsx              # Configuração de Providers e rotas da aplicação
